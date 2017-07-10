@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.student.dao.EHeyDao">
+    
+	<sql id="eHeyColumns">
+		a.id AS "id",
+		a.name AS "name",
+		a.age AS "age",
+		a.address AS "address"
+	</sql>
+	
+	<sql id="eHeyJoins">
+	</sql>
+    
+	<select id="get" resultType="EHey">
+		SELECT 
+			<include refid="eHeyColumns"/>
+		FROM e_hey a
+		<include refid="eHeyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="EHey">
+		SELECT 
+			<include refid="eHeyColumns"/>
+		FROM e_hey a
+		<include refid="eHeyJoins"/>
+		<where>
+			
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="address != null and address != ''">
+				AND a.address LIKE 
+					<if test="dbName == 'oracle'">'%'||#{address}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{address}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{address},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="EHey">
+		SELECT 
+			<include refid="eHeyColumns"/>
+		FROM e_hey a
+		<include refid="eHeyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO e_hey(
+			id,
+			name,
+			age,
+			address
+		) VALUES (
+			#{id},
+			#{name},
+			#{age},
+			#{address}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE e_hey SET 	
+			name = #{name},
+			age = #{age},
+			address = #{address}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM e_hey
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
